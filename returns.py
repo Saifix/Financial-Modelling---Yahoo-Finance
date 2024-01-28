@@ -5,7 +5,7 @@ def calculate_returns(prices):
     return prices.pct_change()
 
 
-def cal_returns(excel_file, company_names, download_data, start_date, end_date):
+def cal_returns(excel_file, company_names, data):
     # Create a new Excel file or open existing file
     with pd.ExcelWriter(excel_file, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
         for data_type in ["Adj_Price_daily"]:
@@ -13,8 +13,8 @@ def cal_returns(excel_file, company_names, download_data, start_date, end_date):
             combined_data = pd.DataFrame()
 
             for ticker in company_names:
-                print(f"Downloading {data_type} for {ticker}...")
-                data = download_data(ticker, start_date, end_date)
+                #print(f"Downloading {data_type} for {ticker}...")
+                #data = download_data(ticker, start_date, end_date)
 
                 # Extract relevant column for the current data type
                 if data_type == "Adj_Price_daily":

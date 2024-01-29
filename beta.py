@@ -2,13 +2,14 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 
-def calculate_beta(data, benchmark_symbol, start_date, end_date):
+def calculate_beta(data, benchmark, start_date, end_date):
     # Download historical stock prices
     monthly_data = data.resample('M').last()
     stock_data = monthly_data.loc[start_date:end_date]
     #stock_data = yf.download(stock_symbol, start=start_date, end=end_date, interval='1mo')
-    benchmark_data = yf.download(benchmark_symbol, start=start_date, end=end_date, interval='1mo')
-
+    #benchmark_data = yf.download(benchmark_symbol, start=start_date, end=end_date, interval='1mo')
+    monthly_b_data = benchmark.resample('M').last()
+    benchmark_data = monthly_b_data.loc[start_date:end_date]
     # Extract adjusted closing prices
     stock_adj_close = stock_data['Adj Close']
     benchmark_adj_close = benchmark_data['Adj Close']
@@ -26,14 +27,14 @@ def calculate_beta(data, benchmark_symbol, start_date, end_date):
 
     return beta
 
-def cal_beta_main(tickers,benchmark_symbol,start_date,end_date,constituents_file,Output_file,summary_stats_df):
+def cal_beta_main(tickers,data,benchmark_data,start_date,end_date,constituents_file,Output_file,summary_stats_df):
     # Benchmark symbol (e.g., S&P 500)
 
 
     # Store beta values calculated from download in a dictionary
     downloaded_betas = {}
     for stock_symbol in tickers:
-        beta_value = calculate_beta(stock_symbol, benchmark_symbol, start_date, end_date)
+        beta_value = calculate_beta(data, benchmark_data, start_date, end_date)
         downloaded_betas[stock_symbol] = beta_value
 
     # Replace 'your_tickers_list' with your list of tickers

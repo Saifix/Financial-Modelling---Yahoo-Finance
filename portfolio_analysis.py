@@ -114,7 +114,6 @@ def cal_portfolio(tickers, output_file_path):
     plt.close()
 
     # Save the output to an existing Excel file with the plots
-    output_file_path = 'Stock Data Output.xlsx'
     with pd.ExcelWriter(output_file_path, engine='openpyxl', mode='a', if_sheet_exists="replace") as writer:
         # Save the combined returns to the sheet "PortfolioReturn_monthly"
         combined_returns.to_excel(

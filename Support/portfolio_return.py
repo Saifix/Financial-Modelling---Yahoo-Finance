@@ -1,6 +1,6 @@
 
 
-def cal_portfolio_return(combined_returns, Rf):
+def cal_portfolio_return(combined_returns, Rf, Output_file):
     # Calculate additional metrics
     portfolio_returns = combined_returns["Saif's Fund"]
     benchmark_returns = combined_returns['GSPC Monthly Return']
@@ -10,7 +10,8 @@ def cal_portfolio_return(combined_returns, Rf):
 
     # Check if there are NaN values after dropping them
     if portfolio_returns.isnull().any() or benchmark_returns.isnull().any():
-        raise ValueError("NaN values are present in portfolio or benchmark returns after dropping.")
+        raise ValueError(
+            "NaN values are present in portfolio or benchmark returns after dropping.")
 
     import numpy as np
     import pandas as pd
@@ -26,10 +27,12 @@ def cal_portfolio_return(combined_returns, Rf):
 
     # Check if there are NaN values after dropping them
     if portfolio_returns.isnull().any() or benchmark_returns.isnull().any():
-        raise ValueError("NaN values are present in portfolio or benchmark returns after dropping.")
+        raise ValueError(
+            "NaN values are present in portfolio or benchmark returns after dropping.")
 
     # Calculate mean, std, min, max in annual percentage rates
-    mean_return_annual = (1 + portfolio_returns).prod() ** (12 / len(portfolio_returns.index)) - 1
+    mean_return_annual = (
+        1 + portfolio_returns).prod() ** (12 / len(portfolio_returns.index)) - 1
     std_return_annual = portfolio_returns.std() * np.sqrt(12)
     min_return_annual = portfolio_returns.min() * 12
     max_return_annual = portfolio_returns.max() * 12
@@ -46,11 +49,13 @@ def cal_portfolio_return(combined_returns, Rf):
 
     # Check for NaN values in X and y
     if np.isnan(X_portfolio).any() or np.isnan(y_portfolio).any():
-        raise ValueError("NaN values are present in X or y for Saif Fund after dropping.")
+        raise ValueError(
+            "NaN values are present in X or y for Saif Fund after dropping.")
 
     # Check if there are NaN values after dropping them
     if portfolio_returns.isnull().any() or benchmark_returns.isnull().any():
-        raise ValueError("NaN values are present in Saif Fund or benchmark returns after dropping.")
+        raise ValueError(
+            "NaN values are present in Saif Fund or benchmark returns after dropping.")
 
     model_portfolio = LinearRegression().fit(X_portfolio, y_portfolio)
     alpha_portfolio = model_portfolio.intercept_
@@ -67,7 +72,8 @@ def cal_portfolio_return(combined_returns, Rf):
 
     # Check for NaN values in X and y
     if np.isnan(X_gspc).any() or np.isnan(y_gspc).any():
-        raise ValueError("NaN values are present in X or y for GSPC after dropping.")
+        raise ValueError(
+            "NaN values are present in X or y for GSPC after dropping.")
 
     model_gspc = LinearRegression().fit(X_gspc, y_gspc)
     alpha_gspc = model_gspc.intercept_
@@ -75,7 +81,8 @@ def cal_portfolio_return(combined_returns, Rf):
     r_squared_gspc = model_gspc.score(X_gspc, y_gspc)
 
     # Calculate Sharpe ratio and Treynor ratio for GSPC
-    sharpe_ratio_gspc = (benchmark_returns.mean() * 12 - Rf) / (benchmark_returns.std() * np.sqrt(12))
+    sharpe_ratio_gspc = (benchmark_returns.mean() * 12 - Rf) / \
+        (benchmark_returns.std() * np.sqrt(12))
     treynor_ratio_gspc = (benchmark_returns.mean() * 12 - Rf) / beta_gspc
 
     # Create a DataFrame to store the results
@@ -86,16 +93,17 @@ def cal_portfolio_return(combined_returns, Rf):
     })
 
     # Save the summary data to Excel
-    excel_file_path = 'Stock Data Output.xlsx'
-    with pd.ExcelWriter(excel_file_path, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
+    with pd.ExcelWriter(Output_file, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
         summary_data.to_excel(writer, sheet_name='Fund_summary', index=False)
 
     # Plot a histogram of portfolio returns with lines for Saif Fund and GSPC
     plt.figure(figsize=(10, 6))
 
     # Plot histogram
-    hist, bins, _ = plt.hist(portfolio_returns, bins=20, color='white', edgecolor='maroon', alpha=0.7, histtype='step', label="Saif Fund", density=True)
-    plt.hist(benchmark_returns, bins=bins, color='white', edgecolor='blue', alpha=0.7, label='GSPC', density=True, histtype='step')
+    hist, bins, _ = plt.hist(portfolio_returns, bins=20, color='white', edgecolor='maroon',
+                             alpha=0.7, histtype='step', label="Saif Fund", density=True)
+    plt.hist(benchmark_returns, bins=bins, color='white', edgecolor='blue',
+             alpha=0.7, label='GSPC', density=True, histtype='step')
 
     plt.title('Histogram of Portfolio Returns')
     plt.xlabel('Monthly Returns')
@@ -104,4 +112,3 @@ def cal_portfolio_return(combined_returns, Rf):
     plt.grid(False)
     plt.savefig('Histogram_Portfolio_Returns.png')
     plt.show()
-

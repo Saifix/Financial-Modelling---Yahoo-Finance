@@ -18,7 +18,7 @@ def cal_portfolio_return(combined_returns, Rf):
     from sklearn.linear_model import LinearRegression
 
     # Calculate additional metrics
-    portfolio_returns = combined_returns["Annesha's Fund"]
+    portfolio_returns = combined_returns["Saif's Fund"]
     benchmark_returns = combined_returns['GSPC Monthly Return']
 
     portfolio_returns = portfolio_returns.fillna(0)
@@ -40,24 +40,24 @@ def cal_portfolio_return(combined_returns, Rf):
     min_return_annual_percent = min_return_annual * 100
     max_return_annual_percent = max_return_annual * 100
 
-    # Calculate Alpha, Beta, R-squared for Annesha Fund
+    # Calculate Alpha, Beta, R-squared for Saif Fund
     X_portfolio = benchmark_returns.values.reshape(-1, 1)
     y_portfolio = portfolio_returns.values
 
     # Check for NaN values in X and y
     if np.isnan(X_portfolio).any() or np.isnan(y_portfolio).any():
-        raise ValueError("NaN values are present in X or y for Annesha Fund after dropping.")
+        raise ValueError("NaN values are present in X or y for Saif Fund after dropping.")
 
     # Check if there are NaN values after dropping them
     if portfolio_returns.isnull().any() or benchmark_returns.isnull().any():
-        raise ValueError("NaN values are present in Annesha Fund or benchmark returns after dropping.")
+        raise ValueError("NaN values are present in Saif Fund or benchmark returns after dropping.")
 
     model_portfolio = LinearRegression().fit(X_portfolio, y_portfolio)
     alpha_portfolio = model_portfolio.intercept_
     beta_portfolio = model_portfolio.coef_[0]
     r_squared_portfolio = model_portfolio.score(X_portfolio, y_portfolio)
 
-    # Calculate Sharpe ratio and Treynor ratio for Annesha Fund
+    # Calculate Sharpe ratio and Treynor ratio for Saif Fund
     sharpe_ratio_portfolio = (mean_return_annual - Rf) / std_return_annual
     treynor_ratio_portfolio = (mean_return_annual - Rf) / beta_portfolio
 
@@ -81,7 +81,7 @@ def cal_portfolio_return(combined_returns, Rf):
     # Create a DataFrame to store the results
     summary_data = pd.DataFrame({
         'Variable': ['Average', 'Standard Deviation', 'Minimum', 'Maximum', 'Alpha', 'Beta', 'R-squared', 'Sharpe Ratio', 'Treynor Ratio'],
-        "Annesha Fund": [f'{mean_return_annual_percent:.2f}%', f'{std_return_annual_percent:.2f}%', f'{min_return_annual_percent:.2f}%', f'{max_return_annual_percent:.2f}%', alpha_portfolio, beta_portfolio, r_squared_portfolio, sharpe_ratio_portfolio, treynor_ratio_portfolio],
+        "Saif Fund": [f'{mean_return_annual_percent:.2f}%', f'{std_return_annual_percent:.2f}%', f'{min_return_annual_percent:.2f}%', f'{max_return_annual_percent:.2f}%', alpha_portfolio, beta_portfolio, r_squared_portfolio, sharpe_ratio_portfolio, treynor_ratio_portfolio],
         'GSPC': [f'{benchmark_returns.mean() * 12 * 100:.2f}%', f'{benchmark_returns.std() * np.sqrt(12) * 100:.2f}%', f'{benchmark_returns.min() * 12 * 100:.2f}%', f'{benchmark_returns.max() * 12 * 100:.2f}%', alpha_gspc, beta_gspc, r_squared_gspc, sharpe_ratio_gspc, treynor_ratio_gspc]
     })
 
@@ -90,11 +90,11 @@ def cal_portfolio_return(combined_returns, Rf):
     with pd.ExcelWriter(excel_file_path, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
         summary_data.to_excel(writer, sheet_name='Fund_summary', index=False)
 
-    # Plot a histogram of portfolio returns with lines for Annesha Fund and GSPC
+    # Plot a histogram of portfolio returns with lines for Saif Fund and GSPC
     plt.figure(figsize=(10, 6))
 
     # Plot histogram
-    hist, bins, _ = plt.hist(portfolio_returns, bins=20, color='white', edgecolor='maroon', alpha=0.7, histtype='step', label="Annesha Fund", density=True)
+    hist, bins, _ = plt.hist(portfolio_returns, bins=20, color='white', edgecolor='maroon', alpha=0.7, histtype='step', label="Saif Fund", density=True)
     plt.hist(benchmark_returns, bins=bins, color='white', edgecolor='blue', alpha=0.7, label='GSPC', density=True, histtype='step')
 
     plt.title('Histogram of Portfolio Returns')

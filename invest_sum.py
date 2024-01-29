@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
+import yfinance as yf
 
 # Function to calculate Sharpe Ratio
 def SharpeRatio(weights, Ret, Rf):
@@ -18,7 +19,7 @@ def cal_invest_sum(tickers, Rf, panel_data, excel_file_path,Output_file ):
     end_date = '2023-11-30'  # Updated end date
 
     # Download data
-    #panel_data = yf.download(tickers, start_date, end_date)
+    panel_data = yf.download(tickers, start_date, end_date)
 
     # Resample data to monthly frequency and fill missing data with zeros
     Returns = panel_data['Adj Close'].resample("1m").ffill().pct_change().fillna(0)
